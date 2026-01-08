@@ -82,14 +82,15 @@ while True:
         context = "\n".join(recent_history)
         
         # Build prompt
-        prompt = f"""You are Lumo, a helpful AI. Be concise (max 2-3 sentences).
+        prompt = f"""You are Lumo, a helpful and knowledgeable AI assistant.
+Provide detailed, thorough, and informative responses. Explain concepts clearly with examples when helpful.
 
 {context}
 Lumo:"""
         
         # Show processing spinner
         spinner.start("Lumo is thinking")
-        response = llm.generate(prompt, max_tokens=80)
+        response = llm.generate(prompt, max_tokens=2000)
         response = response.strip()
         spinner.stop()
         
