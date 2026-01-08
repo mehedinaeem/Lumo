@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+
+# Large model files
+models/llm/*.gguf
+models/llm/*.bin
+models/stt/
+models/tts/
+
+# Piper TTS binaries
+piper/
+
+# Output files
+output.wav
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
