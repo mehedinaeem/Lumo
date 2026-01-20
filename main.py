@@ -25,6 +25,20 @@ llm = GPT4All(
 # Conversation history for context
 conversation_history = []
 
+# Greeting message
+GREETING_MESSAGE = "Hello! I'm Lumo, your offline voice assistant. How could I help you today?"
+
+# Greeting words to detect
+GREETING_WORDS = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"]
+
+def is_greeting(text):
+    """Check if the text is a greeting"""
+    text_lower = text.lower().strip()
+    for greeting in GREETING_WORDS:
+        if text_lower == greeting or text_lower.startswith(greeting + " "):
+            return True
+    return False
+
 def speak(text):
     global is_speaking
     is_speaking = True
@@ -70,6 +84,12 @@ def speak(text):
     
     is_speaking = False
 
+print("[*] LUMO is starting...")
+print(f"🤖 {GREETING_MESSAGE}")
+
+# Speak the startup greeting
+speak(GREETING_MESSAGE)
+
 print("[*] LUMO is listening... (say 'exit' or 'quit' to stop)")
 
 with sd.RawInputStream(
@@ -100,24 +120,28 @@ with sd.RawInputStream(
             
             print(f"You: {text}")
             
-            # Build prompt with conversation context
-            conversation_history.append(f"User: {text}")
-            
-            # Keep only last 4 exchanges for context
-            recent_history = conversation_history[-4:]
-            context = "\n".join(recent_history)
-            
-            prompt = f"""You are Lumo, a helpful offline AI assistant. 
+            # Check if it's a greeting
+            if is_greeting(text):
+                reply = GREETING_MESSAGE
+            else:
+                # Build prompt with conversation context
+                conversation_history.append(f"User: {text}")
+                
+                # Keep only last 4 exchanges for context
+                recent_history = conversation_history[-4:]
+                context = "\n".join(recent_history)
+                
+                prompt = f"""You are Lumo, a helpful offline AI assistant. 
 Answer the user's question directly and helpfully. Be concise (under 50 words).
 
 {context}
 Lumo:"""
-            
-            reply = llm.generate(prompt, max_tokens=80)
-            reply = reply.strip()
-            
-            # Store response in history
-            conversation_history.append(f"Lumo: {reply}")
+                
+                reply = llm.generate(prompt, max_tokens=80)
+                reply = reply.strip()
+                
+                # Store response in history
+                conversation_history.append(f"Lumo: {reply}")
             
             print(f"Lumo: {reply}")
             speak(reply)

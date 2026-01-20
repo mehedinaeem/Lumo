@@ -56,6 +56,23 @@ spinner.stop()
 
 print("✅ Model loaded: orca-mini-3b-gguf2-q4_0.gguf")
 print("📁 Path: models/llm/")
+
+# Greeting message
+GREETING_MESSAGE = "Hello! I'm Lumo, your offline AI assistant. How could I help you today?"
+
+# Greeting words to detect
+GREETING_WORDS = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"]
+
+def is_greeting(text):
+    """Check if the text is a greeting"""
+    text_lower = text.lower().strip()
+    for greeting in GREETING_WORDS:
+        if text_lower == greeting or text_lower.startswith(greeting + " "):
+            return True
+    return False
+
+# Display startup greeting
+print(f"\n🤖 Lumo: {GREETING_MESSAGE}")
 print("\n💡 Type 'exit' or 'quit' to end the conversation")
 print("="*50 + "\n")
 
@@ -74,30 +91,34 @@ while True:
             print("\n👋 Goodbye! Have a great day!")
             break
         
-        # Add to conversation history
-        conversation_history.append(f"User: {user_input}")
-        
-        # Keep only last 2 exchanges for faster context
-        recent_history = conversation_history[-2:]
-        context = "\n".join(recent_history)
-        
-        # Build prompt
-        prompt = f"""You are Lumo, a helpful and knowledgeable AI assistant.
+        # Check if it's a greeting
+        if is_greeting(user_input):
+            response = GREETING_MESSAGE
+        else:
+            # Add to conversation history
+            conversation_history.append(f"User: {user_input}")
+            
+            # Keep only last 2 exchanges for faster context
+            recent_history = conversation_history[-2:]
+            context = "\n".join(recent_history)
+            
+            # Build prompt
+            prompt = f"""You are Lumo, a helpful and knowledgeable AI assistant.
 Provide detailed, thorough, and informative responses. Explain concepts clearly with examples when helpful.
 
 {context}
 Lumo:"""
+            
+            # Show processing spinner
+            spinner.start("Lumo is thinking")
+            response = llm.generate(prompt, max_tokens=2000)
+            response = response.strip()
+            spinner.stop()
+            
+            # Store response in history
+            conversation_history.append(f"Lumo: {response}")
         
-        # Show processing spinner
-        spinner.start("Lumo is thinking")
-        response = llm.generate(prompt, max_tokens=2000)
-        response = response.strip()
-        spinner.stop()
-        
-        # Store response in history
-        conversation_history.append(f"Lumo: {response}")
-        
-        # Display response with typing effect
+        # Display response
         print(f"Lumo: {response}\n")
         
     except KeyboardInterrupt:
