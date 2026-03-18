@@ -1,0 +1,6 @@
+vosk
+gpt4all
+sounddevice
+numpy
+torch
+transformers

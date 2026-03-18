@@ -1,0 +1,34 @@
+# Virtual environment
+venv/
+
+# Large model files
+models/llm/*.gguf
+models/llm/*.bin
+models/stt/vosk-model-*/
+models/stt/BanglaASR/
+models/tts/*.onnx
+models/tts/*.json
+
+# Piper TTS binaries
+piper/
+
+# Dataset (audio files and metadata are hosted externally)
+# See: https://github.com/mehedinaeem/lumo-speech-dataset
+dataset/**/*.wav
+dataset/**/*.mp3
+dataset/**/*.flac
+dataset/metadata.csv
+
+# Output files
+output.wav
+test_output.wav
+test_bn.mp3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
