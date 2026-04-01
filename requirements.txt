@@ -4,3 +4,45 @@ sounddevice
 numpy
 torch
 transformers
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// XOR Encryption/Decryption Function
+string xorCipher(string text, string key) {
+    string result = "";
+
+    for (int i = 0; i < text.length(); i++) {
+        // Repeat key if shorter than text
+        char xorChar = text[i] ^ key[i % key.length()];
+        result += xorChar;
+    }
+
+    return result;
+}
+
+int main() {
+    string plaintext, key;
+
+    cout << "Enter plaintext: ";
+    cin >> plaintext;
+
+    cout << "Enter key: ";
+    cin >> key;
+
+    // Encryption
+    string encrypted = xorCipher(plaintext, key);
+
+    // Decryption
+    string decrypted = xorCipher(encrypted, key);
+
+    cout << "\nEncrypted text: ";
+    for (char c : encrypted)
+        cout << (int)c << " ";  // show ASCII values
+
+    cout << "\nDecrypted text: " << decrypted << endl;
+
+    return 0;
+}
